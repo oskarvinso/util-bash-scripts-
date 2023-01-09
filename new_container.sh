@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 sudo mkdir /$1
 sudo cp -r /var /$1
 sudo cp -r /etc /$1
