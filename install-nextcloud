@@ -18,6 +18,8 @@ sudo apt install php &&
 php -v >> nxcinstall-log.txt
 sudo apt-get update && sudo apt-get upgrade -y &&
 sudo apt install php-apcu php-bcmath php-cli php-common php-curl php-gd php-gmp php-imagick php-intl php-mbstring php-mysql php-zip php-xml &&
+sudo apt install php-ldap php-mail php-session php-curl php-fileinfo php-posix php-zip php-zlib -y &&
+sudo apt install php-JSON php-GD php-curl php-ctype -y &&
 sudo apt install libmagickcore-6.q16-6-extra &&
 unzip nextcloud-24.0.1.zip &&
 sudo chown -R www-data:www-data nextcloud &&
