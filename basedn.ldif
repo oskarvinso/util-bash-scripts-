@@ -1,0 +1,7 @@
+dn: ou=people,dc=goldhealthgroup,dc=net
+objectClass: SuperUsers
+ou: people
+
+dn: ou=groups,dc=goldhealthgroup,dc=net
+objectClass: superUsersGroup
+ou: groups
