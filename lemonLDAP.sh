@@ -5,4 +5,16 @@ sudo apt install libapache-session-perl libcache-cache-perl libclone-perl libcon
 sudo apt install apache2 libapache2-mod-fcgid libapache2-mod-perl2 &&
 sudo apt-get install lemonldap-ng -y &&
 sudo apt install apt-transport-https &&
-wget https://release.ow2.org/lemonldap/lemonldap-ng-2.0.15.1_deb.tar.gz
+wget https://release.ow2.org/lemonldap/lemonldap-ng-2.0.15.1_deb.tar.gz &&
+tar xzf lemonldap-ng-*.tar.gz
+cd lemonldap-ng-*
+make debian-packages
+sudo a2enmod perl
+sudo a2enmod headers
+sudo a2enmod mod_fcgid
+sudo a2enmod ssl
+sudo a2enmod rewrite
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo apachectl configtest
+sudo apachectl restart
