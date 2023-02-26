@@ -1,0 +1,9 @@
+from os import popen
+
+fl = popen("ls","r").read()
+for f in fl:
+    print(f)
+    
+fl = popen("cat repolist.txt ","r").readlines()
+for f in fl:
+    popen(f"wget https://linux.dell.com/repo/community/ubuntu/pool/trusty/openmanage/740/OMSA/amd64/{f}", "r").read()
