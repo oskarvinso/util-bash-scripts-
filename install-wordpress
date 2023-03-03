@@ -1,10 +1,10 @@
 wget https://wordpress.org/latest.tar.gz
 tar -xzvf latest.tar.gz
 sudo apt update && sudo apt upgrade
-sudo apt install mysql-server &&
-sudo apt install apache2 && 
+sudo apt install mysql-server -y &&
+sudo apt install apache2 -y && 
 sudo systemctl enable mysql &&
-sudo mysql -u root < nxcdb.sql &&
+sudo mysql -u root < wordpress.sql &&
 sudo service mysql restart &&
 sudo apt install php* -y &&
 sudo apt install apache2 libapache2-mod-php php-gd php-mysql php-curl php-mbstring php-intl php-gmp php-bcmath php-xml php-imagick php-zip -y &&
