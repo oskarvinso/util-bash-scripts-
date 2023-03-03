@@ -1,0 +1,4 @@
+wget https://wordpress.org/latest.tar.gz
+tar -xzvf latest.tar.gz
+sudo apt update && sudo apt upgrade
+sudo apt install mysql-server &&
