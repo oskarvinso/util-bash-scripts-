@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Variables de configuración
+WP_SITE_NAME="mysite"
+WP_DB_NAME="wordpress_db"
+WP_DB_USER="wordpress_user"
+WP_DB_PASSWORD="wordpress_password"
+WP_DB_ROOT_PASSWORD="root_password"
+WP_ADMIN_USER="admin"
+WP_ADMIN_PASSWORD="admin_password"
+WP_ADMIN_EMAIL="admin@example.com"
+WP_PORT="8080"
+VESTACP_PORT="8083"
+
+# Actualizar y actualizar el sistema
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
+# Instalar dependencias necesarias
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+
+# Agregar la clave GPG de Docker
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Agregar el repositorio de Docker
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Actualizar el índice de paquetes e instalar Docker
+sudo apt-get update -y
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# Iniciar y habilitar Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Instalar Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Crear una red de Docker
+docker network create wordpress-network
+
+# Crear un contenedor de MariaDB
+docker run -d --name mariadb-$WP_SITE_NAME --network wordpress-network \
+    -e MYSQL_ROOT_PASSWORD=$WP_DB_ROOT_PASSWORD \
+    -e MYSQL_DATABASE=$WP_DB_NAME \
+    -e MYSQL_USER=$WP_DB_USER \
+    -e MYSQL_PASSWORD=$WP_DB_PASSWORD \
+    mariadb:latest
+
+# Crear un contenedor de WordPress
+docker run -d --name wordpress-$WP_SITE_NAME --network wordpress-network \
+    -e WORDPRESS_DB_HOST=mariadb-$WP_SITE_NAME:3306 \
+    -e WORDPRESS_DB_NAME=$WP_DB_NAME \
+    -e WORDPRESS_DB_USER=$WP_DB_USER \
+    -e WORDPRESS_DB_PASSWORD=$WP_DB_PASSWORD \
+    -e WORDPRESS_TABLE_PREFIX=wp_ \
+    -p $WP_PORT:80 \
+    wordpress:latest
+
+# Crear un contenedor de VestaCP
+docker run -d --name vestacp-$WP_SITE_NAME --network wordpress-network \
+    -p $VESTACP_PORT:8083 \
+    -e VESTA_USER=$WP_ADMIN_USER \
+    -e VESTA_PASSWORD=$WP_ADMIN_PASSWORD \
+    -e VESTA_EMAIL=$WP_ADMIN_EMAIL \
+    niiknow/vestacp:latest
+
+# Mostrar información de acceso
+echo "=================================================="
+echo "WordPress site is running at http://localhost:$WP_PORT"
+echo "WordPress Admin Username: $WP_ADMIN_USER"
+echo "WordPress Admin Password: $WP_ADMIN_PASSWORD"
+echo "VestaCP is running at https://localhost:$VESTACP_PORT"
+echo "VestaCP Admin Username: $WP_ADMIN_USER"
+echo "VestaCP Admin Password: $WP_ADMIN_PASSWORD"
+echo "=================================================="
